@@ -122,6 +122,22 @@ You may replace `openwisp2` on the `hosts` field with your production server's h
 Substitute `openwisp2@openwisp2.mydomain.com` with what you deem most appropriate
 as default sender for emails sent by OpenWISP 2.
 
+If your production server is not running on the default ssh port, you may add these lines below the above statements
+to enable ssh-port switching option.
+
+```yaml
+  vars_prompt:
+     - name: "ssh_port"
+       prompt: "Enter the port you wish to set for Ansible to SSH into the VM(Press Enter to use defaults)"
+       private: no
+       default: "22"
+    pre_tasks:
+    - name : Change the SSH Port
+      set_fact:  
+        ansible_ssh_port: "{{ ssh_port }}"
+```
+
+
 Run the playbook
 ----------------
 
@@ -140,7 +156,10 @@ You can remove `-k`, `--become` and `-K` if your public SSH key is installed on 
 **Tips**:
 
 - If you have an error like `Authentication or permission failure` then try to use *root* user `ansible-playbook -i hosts playbook.yml -u root -k`
-- If you have an error about adding the host's fingerprint to the `known_hosts` file, you can simply connect to the host via SSH and then answering yes when prompted, and then try running `ansible-playbook` again.
+- If you have an error about adding the host's fingerprint to the `known_hosts` file, you can simply connect to the host via   SSH using `ssh <user>@<your production server's name>` and then answering yes when prompted
+  to add the host's fingerprint, and then proceed again with running the playbook.
+
+
 
 When the playbook is done running, if you got no errors you can login at:
 
